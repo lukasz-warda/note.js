@@ -1,5 +1,4 @@
 class Note {
-
     constructor(title, body) {
         this._title = title;
         this._body = body;
