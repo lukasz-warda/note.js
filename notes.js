@@ -66,7 +66,14 @@ const removeNote = (title) => {
  * 
  * @param {[]Note} notes 
  */
-const saveNotes = (notes) => fs.writeFileSync('./json/notes.json', JSON.stringify(notes));
+const saveNotes = (notes) => {
+    try {
+        fs.writeFileSync('./json/notes.json', JSON.stringify(notes));
+    } catch (error) {
+        fs.mkdirSync('./json');
+        fs.writeFileSync('./json/notes.json', JSON.stringify(notes));
+    }
+}
 
 /**
  * Saves note to file
