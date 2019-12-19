@@ -1,5 +1,5 @@
 ## Notes app
-It's a small command-line app written in node.js. Which stores simple notes in JSON file.
+It's a small command-line node.js app. Which stores simple notes in JSON file.
 
 I'm just trying to learn node :P.
 ## Installation
