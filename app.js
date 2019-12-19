@@ -1,84 +1,100 @@
 const fs = require('fs');
-const chalk = require('chalk');
 const yargs = require('yargs');
-const notes = require('./notes');
+
+const notesHandler = require('./notes');
+const chalkHandler = require('./chalkHandler');
 const Note = require('./classes/Note');
 
-// add note
+const titlePattern = {
+    describe: 'Note title',
+    demandOption: true,
+    type: 'string',
+}
+
+const bodyPattern = {
+    describe: 'Note body',
+    demandOption: true,
+    type: 'string',
+}
+
+/**
+ * Add note command
+ */
 yargs.command({
     command: 'add',
     describe: 'Adds note',
     builder: {
-        title: {
-            describe: 'Note title',
-            demandOption: true,
-            type: 'string',
-        },
-        body: {
-            describe: 'Note body',
-            demandOption: true,
-            type: 'string',
-        }
+        title: titlePattern,
+        body: bodyPattern
     },
-    handler: (argv) => {
-        const note = new Note(argv.title, argv.body);
-        notes.addNote(note);
+    handler(argv) {
+        notesHandler.addNote(new Note(argv.title, argv.body));
     }
 });
 
-//remove note
+/**
+ * Remove note command
+ */
 yargs.command({
     command: 'remove',
     describe: 'Removes note',
     builder: {
-        title: {
-            demandOption: true,
-            describe: 'Note title',
-            type: 'string'
-        }
+        title: titlePattern,
     },
-    handler: (argv) => {
-        notes.removeNote(argv.title);
+    handler(argv) {
+        notesHandler.removeNote(argv.title);
     }
 });
 
-//lists notes
+/**
+ * List of notes command
+ */
 yargs.command({
     command: 'list',
     describe: 'Lists notes',
-    handler: () => {
-        console.log(chalk.blue.inverse.bold('List of notes: \n'));
-        listNotes(notes.getAllNotes());
+    handler() {
+        chalkHandler.printMsg('header', 'List of notes: \n');
+        listNotes(notesHandler.getAllNotes());
     }
 });
 
-//read note
+/**
+ * Read note command
+ */
 yargs.command({
     command: 'read',
     describe: 'Reads note',
     builder: {
-        title: {
-            demandOption: true,
-            describe: 'Note title',
-            type: 'string'
-        }
+        title: titlePattern,
     },
-    handler: (argv) => {
-        const note = notes.getNote(argv.title);
+    handler(argv) {
+        note = notesHandler.getNote(argv.title);
 
-        if (note) {
-            console.log(chalk.inverse.blue.bold(note.title + ":"));
-            console.log(note.body);
-        } else {
-            console.log(chalk.red("This note don't exists :("));
-        }
+        return note ? printNote(note) : chalkHandler.printMsg('error', "This note don't exists :(");
     }
 });
 
-const listNotes = (notes) => {
-    for (note of notes) {
-        console.log(note.title);
+yargs.command({
+    command: 'removeAll',
+    describe: 'Removes all notes',
+    handler() {
+        notesHandler.removeAll();
     }
+})
+
+/**
+ * Prints all titles to console
+ * @param {[]Note} notes 
+ */
+const listNotes = (notes) => notes.forEach((note) => console.log(note.title));
+
+/**
+ * Prints note to console
+ * @param {Note} note 
+ */
+const printNote = (note) => {
+    chalkHandler.printMsg('header', note.title + ":");
+    console.log(note.body);
 }
 
 yargs.parse();

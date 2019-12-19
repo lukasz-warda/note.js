@@ -1,5 +1,6 @@
 const fs = require('fs');
-const chalk = require('chalk');
+
+const chalkHandler = require('./chalkHandler');
 
 /**
  * Adds new note to file
@@ -7,65 +8,9 @@ const chalk = require('chalk');
  * @param {Note} newNote 
  */
 const addNote = (newNote) => {
-    const notes = loadNotes();
-
-    const duplicateNote = notes.find((note) => {
-        return note.title === newNote.title;
-    });
-
-    if (duplicateNote) {
-        console.log(chalk.red('Note of that title already exists!'));
-    } else {
-        notes.push({
-            title: newNote.title,
-            body: newNote.body,
-        });
-
-        saveNotes(notes);
-        console.log(chalk.green('Note added!'));
-    }
-};
-
-/**
- * Get note by title
- * 
- * @param {string} title
- * @returns {object} Note
- */
-const getNote = (title) => {
-    const notes = loadNotes();
-
-    return notes.find((note) => {
-        return note.title === title;
-    });
-}
-
-/**
- * Removes note from file
- * 
- * @param {string} title 
- */
-const removeNote = (title) => {
-    const oldNotes = loadNotes();
-
-    const newNotes = oldNotes.filter((note) => {
-        return note.title !== title;
-    });
-
-    const hasThisNote = oldNotes.find((note) => {
-        return note.title === title;
-    });
-
-    if (hasThisNote) {
-        saveNotes(newNotes);
-        console.log(
-            chalk.red('Note ') +
-            chalk.white.italic(title) +
-            chalk.red(' removed!')
-        );
-    } else {
-        console.log(chalk.magenta('There is no note to remove :('));
-    }
+    getNote(newNote.title) ?
+        chalkHandler.printMsg('error', 'Note already exists!') :
+        saveNote(newNote);
 };
 
 /**
@@ -82,12 +27,62 @@ const loadNotes = () => {
 };
 
 /**
- * Save note to file
+ * Get note by title
+ * 
+ * @param {string} title
+ * @returns {object} Note
+ */
+const getNote = (title) => {
+    try {
+        return loadNotes().find((note) => note.title === title)
+    } catch (e) {
+        return {};
+    }
+}
+
+/**
+ * Removes all notes
+ */
+const removeAll = () => fs.writeFileSync('./json/notes.json', '');
+
+/**
+ * Removes note from file
+ * 
+ * @param {string} title 
+ */
+const removeNote = (title) => {
+    const newNotes = loadNotes().filter((note) => note.title !== title);
+
+    if (getNote(title)) {
+        saveNotes(newNotes);
+        chalkHandler.printMsg('success', 'Note removed!');
+    } else {
+        chalkHandler.printMsg('error', "Note of that title doesn't exists :(!");
+    }
+};
+
+/**
+ * Save all notes to file
  * 
  * @param {[]Note} notes 
  */
-const saveNotes = (notes) => {
-    fs.writeFileSync('./json/notes.json', JSON.stringify(notes));
+const saveNotes = (notes) => fs.writeFileSync('./json/notes.json', JSON.stringify(notes));
+
+/**
+ * Saves note to file
+ * 
+ * @param {Note} noteToSave 
+ */
+const saveNote = (noteToSave) => {
+    const notes = loadNotes();
+
+    notes.push({
+        title: noteToSave.title,
+        body: noteToSave.body
+    })
+    saveNotes(notes);
+
+    chalkHandler.printMsg('success', 'Note added!');
 }
 
 module.exports = {
@@ -95,4 +90,5 @@ module.exports = {
     addNote: addNote,
     removeNote: removeNote,
     getNote: getNote,
+    removeAll: removeAll
 };
