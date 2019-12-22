@@ -9,13 +9,13 @@ const titlePattern = {
     describe: 'Note title',
     demandOption: true,
     type: 'string',
-}
+};
 
 const bodyPattern = {
     describe: 'Note body',
     demandOption: true,
     type: 'string',
-}
+};
 
 /**
  * Add note command
@@ -70,7 +70,8 @@ yargs.command({
     handler(argv) {
         note = notesHandler.getNote(argv.title);
 
-        return note ? printNote(note) : chalkHandler.printMsg('error', "This note don't exists :(");
+        return note ? printNote(note) :
+            chalkHandler.printMsg('error', "This note don't exists :(");
     }
 });
 
@@ -80,21 +81,21 @@ yargs.command({
     handler() {
         notesHandler.removeAll();
     }
-})
+});
 
 /**
  * Prints all titles to console
- * @param {[]Note} notes 
+ * @param {[]Note} notes
  */
 const listNotes = (notes) => notes.forEach((note) => console.log(note.title));
 
 /**
  * Prints note to console
- * @param {Note} note 
+ * @param {Note} note
  */
 const printNote = (note) => {
     chalkHandler.printMsg('header', note.title + ":");
     console.log(note.body);
-}
+};
 
 yargs.parse();
