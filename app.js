@@ -54,7 +54,7 @@ yargs.command({
     describe: 'Lists notes',
     handler() {
         chalkHandler.printMsg('header', 'List of notes: \n');
-        listNotes(notesHandler.getAllNotes());
+        notesHandler.listNotes(notesHandler.getAllNotes());
     }
 });
 
@@ -70,7 +70,7 @@ yargs.command({
     handler(argv) {
         note = notesHandler.getNote(argv.title);
 
-        return note ? printNote(note) :
+        return note ? notesHandler.printNote(note) :
             chalkHandler.printMsg('error', "This note don't exists :(");
     }
 });
@@ -82,20 +82,5 @@ yargs.command({
         notesHandler.removeAll();
     }
 });
-
-/**
- * Prints all titles to console
- * @param {[]Note} notes
- */
-const listNotes = (notes) => notes.forEach((note) => console.log(note.title));
-
-/**
- * Prints note to console
- * @param {Note} note
- */
-const printNote = (note) => {
-    chalkHandler.printMsg('header', note.title + ":");
-    console.log(note.body);
-};
 
 yargs.parse();

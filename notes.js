@@ -92,10 +92,27 @@ const saveNote = (noteToSave) => {
     chalkHandler.printMsg('success', 'Note added!');
 }
 
+/**
+ * Prints all titles to console
+ * @param {[]Note} notes
+ */
+const listNotes = (notes) => notes.forEach((note) => console.log(note.title));
+
+/**
+ * Prints note to console
+ * @param {Note} note
+ */
+const printNote = (note) => {
+    chalkHandler.printMsg('header', note.title + ":");
+    console.log(note.body);
+};
+
 module.exports = {
     getAllNotes: loadNotes,
     addNote: addNote,
     removeNote: removeNote,
     getNote: getNote,
-    removeAll: removeAll
+    removeAll: removeAll,
+    listNotes: listNotes,
+    printNote: printNote
 };
