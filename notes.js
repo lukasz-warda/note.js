@@ -4,8 +4,8 @@ const chalkHandler = require('./chalkHandler');
 
 /**
  * Adds new note to file
- * 
- * @param {Note} newNote 
+ *
+ * @param {Note} newNote
  */
 const addNote = (newNote) => {
     getNote(newNote.title) ?
@@ -15,7 +15,7 @@ const addNote = (newNote) => {
 
 /**
  * Loads notes object from file
- * 
+ *
  * @returns object Note[]
  */
 const loadNotes = () => {
@@ -28,7 +28,7 @@ const loadNotes = () => {
 
 /**
  * Get note by title
- * 
+ *
  * @param {string} title
  * @returns {object} Note
  */
@@ -38,7 +38,7 @@ const getNote = (title) => {
     } catch (e) {
         return {};
     }
-}
+};
 
 /**
  * Removes all notes
@@ -47,8 +47,8 @@ const removeAll = () => fs.writeFileSync('./json/notes.json', '');
 
 /**
  * Removes note from file
- * 
- * @param {string} title 
+ *
+ * @param {string} title
  */
 const removeNote = (title) => {
     const newNotes = loadNotes().filter((note) => note.title !== title);
@@ -63,8 +63,8 @@ const removeNote = (title) => {
 
 /**
  * Save all notes to file
- * 
- * @param {[]Note} notes 
+ *
+ * @param {[]Note} notes
  */
 const saveNotes = (notes) => {
     try {
@@ -73,12 +73,12 @@ const saveNotes = (notes) => {
         fs.mkdirSync('./json');
         fs.writeFileSync('./json/notes.json', JSON.stringify(notes));
     }
-}
+};
 
 /**
  * Saves note to file
- * 
- * @param {Note} noteToSave 
+ *
+ * @param {Note} noteToSave
  */
 const saveNote = (noteToSave) => {
     const notes = loadNotes();
@@ -86,15 +86,15 @@ const saveNote = (noteToSave) => {
     notes.push({
         title: noteToSave.title,
         body: noteToSave.body
-    })
+    });
     saveNotes(notes);
 
     chalkHandler.printMsg('success', 'Note added!');
-}
+};
 
 /**
  * Prints all titles to console
- * @param {[]Note} notes
+ * @param {Note[]} notes
  */
 const listNotes = (notes) => notes.forEach((note) => console.log(note.title));
 
