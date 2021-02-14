@@ -1,7 +1,6 @@
 const yargs = require('yargs');
 
 const notesHandler = require('./notes');
-const chalkHandler = require('./chalkHandler');
 const Note = require('./classes/Note');
 
 const titlePattern = {
